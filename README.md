@@ -1,4 +1,4 @@
-# 🚀 opencode + spacebot arm64 workspace
+# 🚀 opencode + openchamber + spacebot arm64 workspace
 
 this repository contains a docker infrastructure to run [opencode](https://opencode.ai/) with [openchamber](https://github.com/btriapitsyn/openchamber) and [spacebot.sh](https://spacebot.sh/) on arm64 servers (such as hetzner). 
 
