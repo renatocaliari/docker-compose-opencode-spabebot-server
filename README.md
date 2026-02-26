@@ -2,6 +2,15 @@
 
 this repository contains a docker infrastructure to run [opencode](https://opencode.ai/) with [openchamber](https://github.com/btriapitsyn/openchamber) and [spacebot.sh](https://spacebot.sh/) on arm64 servers (such as hetzner). 
 
+## 🛠 how to use this setup
+this repository is my personal laboratory and is subject to frequent, unannounced breaking changes. to use this for your own deployment, please do not link directly to this repository.
+
+- fork this repository to your own github account.
+- clone or link your fork to your deployment tool (like dokploy).
+- modify the environment variables and volumes in your fork to suit your needs.
+
+by forking, you ensure that your production environment remains stable even if i change the core logic here.
+
 ---
 
 ## 🔒 security & network (tailscale)
