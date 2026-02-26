@@ -1,0 +1,107 @@
+services:
+
+  opencode:
+    build: .
+    container_name: opencode-server
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    privileged: true 
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    devices:
+      - "/dev/ptmx:/dev/ptmx"
+    environment:
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      PROVIDER_MODEL_API_KEY: ${PROVIDER_MODEL_API_KEY:-}
+      PROVIDER_MODEL_BASE_URL: ${PROVIDER_MODEL_BASE_URL:-}
+      PROVIDER_MODEL_BIG: ${PROVIDER_MODEL_BIG:-zai-coding-plan/glm-4.7}
+      PROVIDER_MODEL_SMALL: ${PROVIDER_MODEL_SMALL:-zai-coding-plan/glm-4.7-flash}
+      CLI_WORKSPACE_ROOT: /app/projects
+      PLANNOTATOR_REMOTE: "1"
+      PLANNOTATOR_PORT: "19432"
+      PLANNOTATOR_BROWSER: "/usr/local/bin/plannotator-open-url"
+      SERVER_PUBLIC_HOST: ${SERVER_PUBLIC_HOST:-localhost}
+      PLANNOTATOR_PUBLIC_HOST: ${SERVER_PUBLIC_HOST:-localhost}
+      MEDIA_PORT: "5000"
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
+      PLAYWRIGHT_BROWSERS_PATH: "0"
+      AGENT_BROWSER_EXECUTABLE_PATH: /usr/bin/chromium
+      BUN_PTY_LIB: "/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty_arm64.so"
+    volumes:
+      - projects-data:/app/projects
+      - opencode-data:/root/.opencode
+      - opencode-home:/root
+      - opencode-config:/root/.config/opencode
+      - opencode-bin:/shared/bin
+      - opencode-share:/root/.local/share/opencode
+    ports:
+      - "4097:4097"
+      - "19432:19432"
+      - "5000:5000"
+    networks:
+      - app-net
+
+  spacebot:
+    image: ghcr.io/spacedriveapp/spacebot:latest
+    container_name: spacebot
+    restart: unless-stopped
+    depends_on:
+      - opencode
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        echo "Installing uv (Python manager)..."
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="/root/.local/bin:$$PATH"
+
+        echo "Installing native dependencies..."
+        apt-get update && apt-get install -y python3 python3-pip curl npm gh
+
+        echo "Ensuring Spacebot initial config..."
+        mkdir -p /data
+        if [ ! -f /data/config.toml ]; then
+          echo 'working_directory = "/projects"' > /data/config.toml
+          echo 'id = "spacebot-1"' >> /data/config.toml
+        fi
+
+        echo "Installing ast-grep for code analysis..."
+        npm install -g @ast-grep/cli
+
+        echo "Starting Spacebot..."
+        exec /usr/local/bin/spacebot start --foreground 2>&1
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      AGENTMAIL_API_KEY: ${AGENTMAIL_API_KEY:-}
+      AGENTMAIL_INBOX: ${AGENTMAIL_INBOX:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENCODE_BIN_PATH: /shared/bin/opencode
+      PATH: /shared/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    volumes:
+      - spacebot-data:/data
+      - projects-data:/projects
+      - opencode-config:/root/.config/opencode:ro
+      - opencode-bin:/shared/bin:ro
+    ports:
+      - "19898:19898"
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  opencode-data:
+  opencode-home:
+  opencode-config:
+  projects-data:
+  spacebot-data:
+  opencode-bin:
+  opencode-share:
