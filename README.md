@@ -59,7 +59,7 @@ the agents have access to tools that expand their ability to operate within the 
 
 * **🌐 [agent-browser](https://github.com/vercel-labs/agent-browser):** headless browser automation CLI for AI agents. triggers chromium to read documentation, search for error references, or interact with local uis.
 * **🦴 [dogfood](https://skills.sh/vercel-labs/agent-browser/dogfood):** systematically explores a web application to find issues and produces a report with full reproduction evidence for every finding. whenever the agent generates media, it provides the media server url (port 5000) to the user.
-* **📋 reviewing-plans-with-plannotator:** a custom internal tool directing the `hive-master` to compile the planning file (`plan.md`) and submit it for visual review via the plannotator interface.
+* **📋 reviewing-plans-with-plannotator:** a custom internal skill directing the `hive-master` to submit the plan for visual review via the plannotator interface.
   
 ---
 
