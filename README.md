@@ -5,11 +5,26 @@ this repository contains a docker infrastructure to run [opencode](https://openc
 ## 🛠 how to use this setup
 this repository is my personal laboratory and is subject to frequent, unannounced breaking changes. to use this for your own deployment, please do not link directly to this repository.
 
-- fork this repository to your own github account.
-- clone or link your fork to your deployment tool (like dokploy).
-- modify the environment variables and volumes in your fork to suit your needs.
-
+fork this repository to your own github account.
 by forking, you ensure that your production environment remains stable even if i change the core logic here.
+
+## 📦 how to deploy
+i organized the setup in two different paths. you choose the one that fits your workflow.
+
+### path one. the modular build.
+this is the default approach. it uses the docker-compose.yml along with the Dockerfile and entrypoint.sh. it bakes the tools into a local image. container restarts become much faster. i prefer this method for stability.
+
+- fork this repository.
+- clone your fork to your server.
+- create a .env file with your keys.
+- run `docker-compose up -d --build`
+
+### path two. the standalone file.
+this is a single file solution. it uses the docker-compose.standalone.yml. all installation commands run every time the container boots. it skips the custom image build step.
+
+- copy the docker-compose.standalone.yml file to your server.
+- create your .env file in the same folder.
+- run `docker-compose -f docker-compose.standalone.yml up -d`
 
 ---
 
