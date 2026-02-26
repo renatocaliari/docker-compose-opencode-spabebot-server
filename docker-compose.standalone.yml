@@ -4,15 +4,15 @@ services:
     image: node:20-slim
     container_name: opencode-server
     restart: unless-stopped
-    tty: true                    # Essencial para PTY
-    stdin_open: true             # Essencial para stdin interativo
+    tty: true                    # essential for PTY
+    stdin_open: true             # essential for interactive stdin
     privileged: true 
     sysctls:
-      - net.ipv4.ip_unprivileged_port_start=0 # opcional, mas ajuda em redes complexas
+      - net.ipv4.ip_unprivileged_port_start=0 # optional, but helps in complex networks
     cap_add:
-      - SYS_ADMIN # permite que o container gerencie os plys
+      - SYS_ADMIN # allows the container to manage ptys
     security_opt:
-      - seccomp:unconfined # remove filtros que barram o syscall do terminal
+      - seccomp:unconfined # removes filters that block terminal syscalls
     devices:
       - "/dev/ptmx:/dev/ptmx"            
     entrypoint: ["/bin/sh", "-c"]
@@ -20,13 +20,13 @@ services:
       - |
         export PATH="/root/.local/bin:/root/.bun/bin:$$PATH"
         
-        # Atualizar repositórios com retry
+        # update repositories with retry
         echo "Updating package lists..."
         for i in 1 2 3; do
           apt-get update && break || sleep 2
         done
         
-        # Instalar dependências essenciais primeiro
+        # install essential dependencies first
         echo "Installing essential packages..."
         apt-get install -y --no-install-recommends \
           ca-certificates \
@@ -38,7 +38,7 @@ services:
           pkg-config \
           || { echo "Failed to install essentials"; exit 1; }
         
-        # Instalar restante
+        # install the rest
         apt-get install -y --no-install-recommends \
           gh \
           python3 \
@@ -71,7 +71,7 @@ services:
         export BUN_PTY_LIB="/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty_arm64.so"
         ln -sf "$$BUN_PTY_LIB" "/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty.so"
          
-        # Verificar se existe
+        # check if it exists
         if [ ! -f "$$BUN_PTY_LIB" ]; then
           echo "ERROR: ARM64 library not found at $$BUN_PTY_LIB"
           exit 1
@@ -310,7 +310,7 @@ services:
         echo " Stack ready"
         echo "================================================================"
 
-        # opencode serve na 4096 (porta padrão)
+        # opencode serve on 4096 (default port)
         cd /app/projects && opencode serve --hostname 127.0.0.1 &
         sleep 2
 
@@ -324,14 +324,14 @@ services:
         chmod +x "/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty_arm64.so"
         export SHELL=/bin/bash
 
-        # garante que o serve esteja instalado globalmente para não pedir confirmação (y/n)
+        # ensures serve is installed globally so it doesn't ask for confirmation (y/n)
         npm install -g serve
         
-        # inicia o servidor na raiz dos projetos em background
-        # o --cors permite integrações futuras e o --no-clipboard evita erros no log
+        # starts the server at the root of the projects in the background
+        # --cors allows future integrations and --no-clipboard prevents log errors
         serve /app/projects -p $$MEDIA_PORT --cors --no-clipboard &        
         
-        # openchamber na 4097 conectando ao opencode na 4096
+        # openchamber on 4097 connecting to opencode on 4096
         OPENCODE_PORT=4096 OPENCODE_SKIP_START=true exec openchamber --port 4097
 
     environment:
@@ -362,7 +362,7 @@ services:
     ports:
       - "4097:4097"
       - "19432:19432"
-      - "5000:5000"  # porta para o visualizador de arquivos
+      - "5000:5000"  # port for the file viewer
     networks:
       - app-net
 
