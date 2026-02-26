@@ -60,10 +60,13 @@ services:
         echo "Installing OpenCode CLI (latest)..."
         npm install -g opencode-ai@latest
 
-        echo "Installing openchamber with bun-pty..."
+        echo "installing node-gyp..."
+        npm install -g node-gyp
+
+        echo "installing openchamber with bun-pty..."
         bun add -g @openchamber/web
         bun add -g bun-pty
-        
+                
         # ARM64
         export BUN_PTY_LIB="/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty_arm64.so"
         ln -sf "$$BUN_PTY_LIB" "/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty.so"
@@ -78,7 +81,7 @@ services:
 
         echo "Installing agent-browser CLI..."
         npm install -g agent-browser
-        AGENT_BROWSER_EXECUTABLE_PATH=/usr/bin/chromium agent-browser install || true
+        AGENT_BROWSER_EXECUTABLE_PATH=/usr/bin/chromium npm_config_yes=true agent-browser install || true
 
         echo "Installing opencode-qwencode-auth plugin..."
         mkdir -p /root/.opencode
