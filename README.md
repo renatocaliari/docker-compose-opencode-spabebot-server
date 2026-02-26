@@ -76,12 +76,15 @@ the `AGENTS.md` file is injected into the container and acts as a constitution f
 4. 🧪 **pragmatic testing:** code validation is part of the implementation effort. tests are generated before or during coding.
 5. **media & file navigation (dogfood flow):** whenever an agent uses the `dogfood` skill to execute commands, manipulate files, or record browser sessions, it is strictly instructed to inform the user to visit the media server URL (default port 5000) to navigate project files and watch recorded session videos.
    
----
+
+### important notes on workflow & current limitations
+
+- **plannotator + hive-master flow**: the process where the hive-master submits a plan and waits for user approval via the plannotator interface is **not yet fully smooth**. even though the instructions in agents.md clearly tell the agent to inform the user (e.g. "visit the plannotator url to review and approve the plan"), the agent does **not always** clearly communicate this step in the chat.  sometimes it just pauses silently while waiting for approval.  
+  → workaround: when the agent stops responding mid-task (especially after a planning phase), check the plannotator url (configured in your setup) for a pending plan to review/approve. this is a known rough edge — feedback or prs to improve agent prompting or add better status messages are very welcome!
 
 ## 📦 how to use
 
-1. clone this repository.
-2. create a `.env` file to provide the required variables:
+create a `.env` file to provide the required variables:
    ```env
    # use your tailscale ip here
    SERVER_PUBLIC_HOST=100.x.y.z 
@@ -94,3 +97,10 @@ the `AGENTS.md` file is injected into the container and acts as a constitution f
    AGENTMAIL_API_KEY=
    AGENTMAIL_INBOX=
    EXA_API_KEY=
+  ```
+
+## contributing
+
+this is a simple docker-compose glue repo that i put together after hours of testing and tweaking to make everything run stably on arm64. no fancy advanced custom magic here.
+
+if you run into any bugs, find a better way to configure things, want to add arm64-specific optimizations, improve security defaults, or enhance the overall setup (e.g. better handling of plannotator wait states), feel free to open an issue or submit a pr. all contributions are appreciated! 🚀
