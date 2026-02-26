@@ -18,13 +18,13 @@ this ensures your code, media files, and terminal sessions remain completely iso
 
 ---
 
-## 🏗️ architecture and services
+## 🏗️ architecture and services - exposed ports (only via Tailscale 🙏)
 
 the infrastructure operates within an isolated network (`app-net`) featuring two core services:
 
-* **`opencode` (ports 4097, 4096, 5000):** the main container based on `node:20-slim`. it installs system dependencies (ffmpeg, chromium, build-essential) and prepares the terminal.
-  * 🌐 **openchamber (4097):** the web interface for code editing and chatting with the agent guild.
-  * ⚙️ **opencode cli (4096):** the backend server that processes agent actions.
+* **`opencode`):** the main container based on `node:20-slim`. it installs system dependencies (ffmpeg, chromium, build-essential) and prepares the terminal.
+  * 🌐 **openchamber (4097):** the web interface.
+  * ⚙️ **opencode cli (4096):** opencode backend/CLI (**port not exposed**)
   * 🎬 **media server (5000):** a static file server (`npx serve`) pointing to `/app/projects`. it allows you to view media files unsupported by the text editor (like `.webm` videos or heavy images) straight in the browser.
 
 * **`spacebot` (port 19898):** concurrent AI agent system (built in Rust) that fixes blocking/single-threaded limitations in tools like OpenClaw
