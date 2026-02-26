@@ -27,8 +27,13 @@ the infrastructure operates within an isolated network (`app-net`) featuring two
   * ⚙️ **opencode cli (4096):** the backend server that processes agent actions.
   * 🎬 **media server (5000):** a static file server (`npx serve`) pointing to `/app/projects`. it allows you to view media files unsupported by the text editor (like `.webm` videos or heavy images) straight in the browser.
 
-* **`spacebot` (port 19898):** an auxiliary service built on top of spacedrive. it uses `ast-grep` to perform structural analysis and semantic code indexing, providing deep context to the agents.
+* **`spacebot` (port 19898):** concurrent AI agent system (built in Rust) that fixes blocking/single-threaded limitations in tools like OpenClaw
+  * fast, non-blocking responses for teams & communities
+  * integrations: Discord, Slack, Telegram, and more
+  * routes code-related tasks to OpenCode
   * 🤝 **shared binary:** spacebot mounts a shared volume (`/shared/bin`) to consume the exact same `opencode` binary built by the main service. this ensures version consistency across services and avoids redundant installations.
+  * operates on the same project workspace & file context
+
 
 ### the arm64 pty workaround for openchamber
 
