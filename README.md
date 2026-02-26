@@ -81,6 +81,11 @@ the `AGENTS.md` file is injected into the container and acts as a constitution f
    # use your tailscale ip here
    SERVER_PUBLIC_HOST=100.x.y.z 
    MEDIA_PORT=5000
+   PROVIDER_MODEL_BASE_URL=
+   PROVIDER_MODEL_API_KEY=
    PROVIDER_MODEL_BIG=openrouter/anthropic/claude-3.5-sonnet
    PROVIDER_MODEL_SMALL=openrouter/google/gemini-3.0-flash
-   # include api keys for openrouter, github, etc.
+   GITHUB_TOKEN=
+   AGENTMAIL_API_KEY=
+   AGENTMAIL_INBOX=
+   EXA_API_KEY=
