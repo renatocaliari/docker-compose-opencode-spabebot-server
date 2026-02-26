@@ -2,8 +2,6 @@
 
 this repository contains a docker infrastructure to run [opencode](https://opencode.ai/) with [openchamber](https://github.com/btriapitsyn/openchamber) and [spacebot.sh](https://spacebot.sh/) on arm64 servers (such as hetzner). 
 
-the environment is designed for a deliberate workflow with ai agents. rather than focusing on blind automation, the setup prioritizes context retention, human review of architectural decisions, and the stability of essential tools, like the integrated terminal.
-
 ---
 
 ## 🔒 security & network (tailscale)
