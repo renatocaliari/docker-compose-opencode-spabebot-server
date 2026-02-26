@@ -363,7 +363,7 @@ services:
       - app-net
 
   spacebot:
-    image: ghcr.io/spacedriveapp/spacebot:full
+    image: ghcr.io/spacedriveapp/spacebot:latest
     container_name: spacebot
     restart: unless-stopped
     depends_on:
