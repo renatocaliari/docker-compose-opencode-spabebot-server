@@ -32,8 +32,18 @@ the infrastructure operates within an isolated network (`app-net`) featuring two
   * integrations: Discord, Slack, Telegram, and more
   * routes code-related tasks to OpenCode
   * 🤝 **shared binary:** spacebot mounts a shared volume (`/shared/bin`) to consume the exact same `opencode` binary built by the main service. this ensures version consistency across services and avoids redundant installations.
-  * operates on the same project workspace & file context
+  * operates on the same project workspace & file context (/app/projects).
 
+## shared workspace
+
+the setup uses one shared workspace folder (`/app/projects`) for everything. all projects live inside there as subfolders (e.g., `/app/projects/my-app`, `/app/projects/experiment-xyz`).
+but you can achieve practical "project isolation" via OpenChamber's built-in features.
+
+it's not strict container-level isolation (like separate volumes per project), but project-level scoping. 
+
+even before opening a session, OpenChamber asks you to select the project directory using its workspace-first flow and directory picker. so every session starts already focused on that specific project.
+
+and it lets you handle several projects at once, switching between them easily.
 
 ### the arm64 pty workaround for openchamber
 
