@@ -235,7 +235,7 @@ cd /app/projects
 opencode serve --hostname 127.0.0.1 &
 sleep 2
 
-ln -sf /app/projects /root/projects
+ln -sfn /app/projects /root/projects
 
 echo "starting media file server..."
 serve /app/projects -p 5000 --cors --no-clipboard &
