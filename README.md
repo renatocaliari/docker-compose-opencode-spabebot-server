@@ -18,7 +18,7 @@ this ensures your code, media files, and terminal sessions remain completely iso
 
 ---
 
-## 🏗️ architecture and services - exposed ports (only via Tailscale 🙏)
+## 🏗️ architecture and services - exposed ports (via Tailscale 🙏)
 
 the infrastructure operates within an isolated network (`app-net`) featuring two core services:
 
