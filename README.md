@@ -32,11 +32,13 @@ the infrastructure operates within an isolated network (`app-net`) featuring two
 * **`spacebot` (port 19898):** an auxiliary service built on top of spacedrive. it uses `ast-grep` to perform structural analysis and semantic code indexing, providing deep context to the agents.
   * 🤝 **shared binary:** spacebot mounts a shared volume (`/shared/bin`) to consume the exact same `opencode` binary built by the main service. this ensures version consistency across services and avoids redundant installations.
 
-### 🔧 the arm64 pty workaround
-starting a pseudo-terminal (pty) via nodejs in arm64 docker containers often fails with a `pty spawn failed` error. this setup addresses the issue by:
-1. downloading and explicitly mapping the `librust_pty_arm64.so` library.
-2. fixing permissions and creating symlinks during boot.
-3. adding `cap_add: SYS_ADMIN` and `seccomp:unconfined` permissions so the container can access linux terminal resources (`/dev/ptmx`).
+### the arm64 pty workaround for openchamber
+
+starting a pseudo-terminal (pty) via nodejs in arm64 docker containers often fails with a `pty spawn failed` error. this setup addresses the issue to ensure **openchamber** can provide a functional interactive terminal by:
+
+* **library mapping:** downloading and explicitly mapping the `librust_pty_arm64.so` library required by `bun-pty`.
+* **bootstrapping:** fixing permissions and creating symlinks during boot to ensure the runtime finds the correct binary.
+* **system permissions:** adding `cap_add: SYS_ADMIN` and `security_opt: seccomp:unconfined` so the container can access linux terminal resources (`/dev/ptmx`), which is vital for **openchamber** to bridge the shell to the web interface.
 
 ---
 
