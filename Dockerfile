@@ -27,6 +27,7 @@ RUN curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/c
 
 # instalar npm e bun e pacotes globais
 RUN npm install -g bun \
+    && npm install -g node-gyp \
     && npm install -g opencode-ai@latest \
     && bun add -g @openchamber/web \
     && bun add -g bun-pty \
@@ -36,7 +37,7 @@ RUN npm install -g bun \
 
 # configurar o agent-browser
 ENV AGENT_BROWSER_EXECUTABLE_PATH=/usr/bin/chromium
-RUN agent-browser install || true
+RUN npm_config_yes=true agent-browser install || true
 
 # instalar uv (python manager) e lsps
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
