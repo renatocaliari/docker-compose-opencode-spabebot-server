@@ -1,31 +1,38 @@
 #!/bin/bash
 set -e
 
-export PATH="/root/.local/bin:/root/.bun/bin:$PATH"
+echo "starting environment configuration..."
 
+export PATH="/root/.local/bin:/root/.bun/bin:$PATH"
 export BUN_PTY_LIB="/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty_arm64.so"
+
+echo "configuring arm64 library..."
 ln -sf "$BUN_PTY_LIB" "/root/.bun/install/global/node_modules/bun-pty/rust-pty/target/release/librust_pty.so"
 
 if [ ! -f "$BUN_PTY_LIB" ]; then
-  echo "erro. biblioteca arm64 nao encontrada em $BUN_PTY_LIB"
+  echo "error. arm64 library not found at $BUN_PTY_LIB"
   exit 1
 fi
 
 chmod +x "$BUN_PTY_LIB"
 export SHELL=/bin/bash
 
+echo "installing qwencode auth plugin..."
 mkdir -p /root/.opencode
 cd /root/.opencode
 npm install opencode-qwencode-auth --no-save || true
 
+echo "configuring github cli credentials..."
 gh auth setup-git || true
 
-npx --yes skills@latest add https://github.com/vercel-labs/agent-browser --yes --global || true
-npx --yes skills@latest add https://github.com/vercel-labs/agent-browser --skill dogfood --yes --global --agents opencode || true
+echo "installing agent-browser skills via npx..."
+npx --yes skills@latest add https://github.com/vercel-labs/agent-browser --yes --global || echo "warning. base skill failed."
+npx --yes skills@latest add https://github.com/vercel-labs/agent-browser --skill dogfood --yes --global --agents opencode || echo "warning. dogfood skill failed."
 
 mkdir -p /root/.config/opencode/skills
 cp /root/.agents/skills/*.md /root/.config/opencode/skills/ 2>/dev/null || true
 
+echo "generating configuration and agent files..."
 node -e '
   const fs = require("fs");
 
@@ -209,17 +216,29 @@ node -e '
   fs.writeFileSync("/root/.config/opencode/opencode-synced.jsonc", JSON.stringify(opencodeSyncedConfig, null, 2));
 '
 
-curl -fsSL https://plannotator.ai/install.sh | bash || true
+echo "installing plannotator..."
+curl -fsSL https://plannotator.ai/install.sh | bash || echo "warning. plannotator install.sh failed."
+
+echo "verifying cli and lsp installations..."
+opencode --version && echo "opencode ok."
+uv tool list | grep -E "(basedpyright|htpy-lsp)" && echo "lsps ok."
 
 mkdir -p /shared/bin
 cp $(which opencode) /shared/bin/opencode
 
+echo "================================================================"
+echo " stack ready"
+echo "================================================================"
+
+echo "starting opencode server in background..."
 cd /app/projects
 opencode serve --hostname 127.0.0.1 &
 sleep 2
 
 ln -sf /app/projects /root/projects
 
+echo "starting media file server..."
 serve /app/projects -p 5000 --cors --no-clipboard &
 
+echo "starting openchamber..."
 OPENCODE_PORT=4096 OPENCODE_SKIP_START=true exec openchamber --port 4097
